@@ -206,9 +206,9 @@ async def _query(full_query):
     try:
 
         response = await get_response_from_gemini(full_query)
-        print("\nReceived response:")
-        for i, item in enumerate(response.items):
-            print(f"{i + 1}. {item}")
+        # print("\nReceived response:")
+        # for i, item in enumerate(response.items):
+        #     print(f"{i + 1}. {item}")
 
         return response
     except Exception as e:

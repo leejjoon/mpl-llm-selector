@@ -1,20 +1,21 @@
 import pandas as pd
 from matplotlib.colors import to_hex
+from typing import List, Iterator, Any, Dict
+from matplotlib.axes import Axes
+from pandas import DataFrame, Series, Index
 
 
-# class MplContextHelper:
 class MplAxesProperties:
-    def __init__(self, ax):
-        self._ax = ax
+    def __init__(self, ax: Axes):
+        self._ax: Axes = ax
 
-        # self._artist_attrs = self.get_artist_attrs_all()
-        xx = self.get_artist_attrs_all(get_id=True)
-        self._df_artists = pd.DataFrame(xx)
+        xx: List[Dict[str, Any]] = self.get_artist_attrs_all(get_id=True)
+        self._df_artists: DataFrame = pd.DataFrame(xx)
 
-        labs = self.get_label_properties()
-        self._df_legend = pd.DataFrame(labs)
+        labs: List[Dict[str, Any]] = self.get_label_properties()
+        self._df_legend: DataFrame = pd.DataFrame(labs)
 
-    def get_artist_attrs(self, l, get_bbox=True, get_id=True):
+    def get_artist_attrs(self, l: Any, get_bbox: bool = True, get_id: bool = True) -> Dict[str, Any]:
         ax = self._ax
 
         if get_bbox:
@@ -40,7 +41,7 @@ class MplAxesProperties:
         return x
 
 
-    def get_artist_attrs_all(self, get_id=True):
+    def get_artist_attrs_all(self, get_id: bool = True) -> List[Dict[str, Any]]:
         ax = self._ax
         xx = []
         for kind, artists in [("lines", ax.lines),
@@ -54,7 +55,7 @@ class MplAxesProperties:
 
         return xx
 
-    def get_label_properties(self):
+    def get_label_properties(self) -> List[Dict[str, Any]]:
 
         ax = self._ax
 
@@ -66,7 +67,7 @@ class MplAxesProperties:
 
         return labs
 
-    def get_axes_properties(self):
+    def get_axes_properties(self) -> Dict[str, Any]:
 
         ax = self._ax
         df_legend = self._df_legend
@@ -88,7 +89,7 @@ class MplAxesProperties:
                     legend_dataframe=df_legend
                     )
 
-    def get_context(self):
+    def get_context(self) -> str:
 
         prop = self.get_axes_properties()
         context = f"""
@@ -119,7 +120,7 @@ y = {prop["ylim"]}
 
         return context
 
-    def select_artists(self, id_list):
+    def select_artists(self, id_list: List[int]) -> "SelectedArtists":
         selectors = self._df_artists.set_index("id").loc[id_list]["selector"]
         selected = SelectedArtists(self._ax, self._df_artists.set_index("selector"),
                                    selectors)
@@ -134,61 +135,39 @@ class SelectedArtists:
     #     pass
 
     @classmethod
-    def from_selectors(cls, ax, selectors):
+    def from_selectors(cls, ax: Axes, selectors: List[str]) -> "SelectedArtists":
         ax_prop = MplAxesProperties(ax)
         return cls(ax, ax_prop._df_artists.set_index("selector"), selectors)
 
-    def __init__(self, ax, df_artists, selectors):
-        self._ax = ax
-        self._df_artists_parent = df_artists
-        self._selected_df = df_artists.loc[selectors]
-        self._selectors = selectors
+    def __init__(self, ax: Axes, df_artists: DataFrame, selectors: List[str] | Series | Index):
+        self._ax: Axes = ax
+        self._df_artists_parent: DataFrame = df_artists
+        self._selected_df: DataFrame = df_artists.loc[selectors]
+        self._selectors: List[str] | Series | Index = selectors
 
-    def inverted(self):
+    def __repr__(self) -> str:
+        if isinstance(self._selectors, pd.Series):
+            selectors = list(self._selectors.values)
+        else:
+            selectors = self._selectors
+        return f"SelectedArtists: {selectors}"
+
+    def inverted(self) -> "SelectedArtists":
         inverted_idx = self._df_artists_parent.index.difference(self._selectors)
 
         return type(self)(self._ax, self._df_artists_parent, inverted_idx)
 
-    def iter_artists(self):
+    def iter_artists(self) -> Iterator[Any]:
         for selector in self._selectors:
             m = p_selector.match(selector)
             kind, ind = m.groups()
             a = getattr(self._ax, kind)[int(ind)]
             yield a
 
-    def show_selectors(self):
+    def show_selectors(self) -> List[str]:
         return list(self._selectors)
 
-    def set(self, *kl, **kwargs):
+    def set(self, *kl: Any, **kwargs: Any) -> None:
         for a in self.iter_artists():
             a.set(*kl, **kwargs)
 
-if False:
-    helper = MplAxesProperties(ax)
-    c = helper.get_context()
-
-# print(df_artists.to_markdown())
-
-# %%
-
-
-# %%
-
-
-# %%
-
-
-# print(context)
-
-
-# if False:
-#     from matplotlib.patches import Rectangle
-#     xx = []
-#     for kind, artists in [("lines", ax.lines),
-#                           ("patches", ax.patches),
-#                           ("collections", ax.collections)]:
-#         for i, l in enumerate(artists):
-
-#             x = get_artist_attrs(l, ax)
-#             x["accessor"] = f"{kind}[{i}]"
-#             xx.append(x)
