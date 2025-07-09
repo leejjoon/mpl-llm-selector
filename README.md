@@ -2,6 +2,28 @@
 
 `mpl-llm-selector` is a Python package that allows you to select `matplotlib` artists using natural language queries, powered by large language models.
 
+## Usage
+
+Here's an example demonstrating how to use `mpl-llm-selector` to select artists from a `matplotlib` plot:
+
+```python
+from mpl_llm_selector import query_artists
+
+q = "artists for Friday"
+selected = query_artists(ax, q)
+print(selected)
+
+selected.inverted().set(alpha=0.2)
+
+plt.show()
+```
+
+This will display a plot where artists not matching "artists for Friday" are dimmed.
+
+<img width="422" height="327" alt="Image" src="https://github.com/user-attachments/assets/0b55fb37-bccc-48ab-a8a3-0cad2625cefc" />
+
+For the full example, take a look at [`usage_demonstration.ipynb`](notebooks/usage_demonstration.ipynb).
+
 ## Installation
 
 This project uses [Poetry](https://python-poetry.org/) for dependency management.
@@ -64,22 +86,3 @@ GOOGLE_API_KEY="your_google_api_key_here"
 
 The package will automatically load this key.
 
-## Usage
-
-Here's an example demonstrating how to use `mpl-llm-selector` to select artists from a `matplotlib` plot:
-
-```python
-from mpl_llm_selector import query_artists
-
-q = "artists for Friday"
-selected = query_artists(ax, q)
-print(selected)
-
-selected.inverted().set(alpha=0.2)
-
-plt.show()
-```
-
-This will display a plot where artists not matching "artists for Friday" are dimmed.
-
-For the full example, take a look at [`usage_demonstration.ipynb`](notebooks/usage_demonstration.ipynb).
