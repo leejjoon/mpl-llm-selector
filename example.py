@@ -24,6 +24,7 @@ sns.despine(offset=10, trim=True)
 
 from mpl_llm_selector import query_artists
 
+print("Querying the LLM to select artists. This can take several seconds.")
 q = "artists for Friday"
 selected = query_artists(ax, q)
 print(selected)
