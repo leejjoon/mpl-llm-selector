@@ -6,6 +6,8 @@
 
 This project uses [Poetry](https://python-poetry.org/) for dependency management.
 
+### For Development (using Poetry)
+
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/your-repo/mpl-llm-selector.git
@@ -20,6 +22,27 @@ This project uses [Poetry](https://python-poetry.org/) for dependency management
 3.  **Activate the virtual environment:**
     ```bash
     poetry shell
+    ```
+
+### For Local Installation (using pip)
+
+If you prefer to install the project directly using `pip` from the local source:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-repo/mpl-llm-selector.git
+    cd mpl-llm-selector
+    ```
+
+2.  **Install in editable mode (recommended for development):**
+    ```bash
+    pip install -e .
+    ```
+    This allows changes in the source code to be reflected without re-installation.
+
+3.  **Or, install normally:**
+    ```bash
+    pip install .
     ```
 
 ## Google API Key
